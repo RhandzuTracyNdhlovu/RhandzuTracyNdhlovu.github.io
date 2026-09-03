@@ -290,7 +290,7 @@
     <h1>Tracy Ndhlovu</h1>
     <p class="tagline">I harden Windows systems and prove it worked — not because a setting says "On," but because I tested it myself and captured the evidence.</p>
     <div class="hero-meta">
-      <span>5 case studies</span>
+      <span>6 case studies</span>
       <span>Windows Defender · UAC · Updates · SSH</span>
       <span>Evidence-based</span>
     </div>
@@ -489,6 +489,48 @@
         </div>
       </div>
     </article>
+    <article>
+  <div class="case-header">
+    <span class="case-num mono">06</span>
+    <span class="case-title">Local Account and Administrator Rights Review</span>
+  </div>
+  <div class="case-card">
+    <div class="beat">
+      <div class="beat-label">The problem</div>
+      <p>I wanted to check which local accounts on my PC had administrator rights. I also wanted to check for accounts I no longer needed. Unused accounts and unnecessary admin rights are both easy ways in for an attacker.</p>
+    </div>
+    <div class="beat">
+      <div class="beat-label">What I did</div>
+      <p>I ran net user to list every local account. I ran net localgroup administrators to see who actually had admin rights. Only two accounts showed up: ndhlo and the built-in Administrator account.</p>
+      <p>I checked the built-in Administrator account with net user administrator. It was disabled. It had no recorded sign-in. I checked the Guest account the same way. It was disabled too.</p>
+      <p>I checked sshlab, an account I'd used for earlier SSH testing. It was active. Its last sign-in was 14 August, from that testing. I didn't need it anymore. I opened an elevated Command Prompt and ran net user sshlab /active:no.</p>
+      <p>Two accounts I hadn't set up myself also showed up: CodexSandboxOffline and CodexSandboxOnline. Both were active. Both were standard user accounts. Both belonged to a group called CodexSandboxUsers.</p>
+      <p>I didn't create these accounts. I checked their user folders for an explanation. Nothing useful there. I checked installed apps for "Codex." Nothing showed up. I checked again for "OpenAI." OpenAI Codex was installed on this machine.</p>
+      <p>I researched the account names directly. OpenAI's own documentation confirms Codex creates these two accounts during sandbox setup. A bug report on Codex's public GitHub repository confirms the same thing. One account has network access blocked. The other doesn't.</p>
+      <div class="evidence">
+        <div class="evidence-strip">
+          <div class="evidence-shot" data-full="images/localaccount-01-list-admins.png"><img src="images/localaccount-01-list-admins.png" alt="net user and net localgroup administrators output"></div>
+          <div class="evidence-shot" data-full="images/localaccount-02-sshlab-active.png"><img src="images/localaccount-02-sshlab-active.png" alt="sshlab account active before remediation"></div>
+          <div class="evidence-shot" data-full="images/localaccount-03-codexoffline.png"><img src="images/localaccount-03-codexoffline.png" alt="CodexSandboxOffline account details"></div>
+        </div>
+      </div>
+    </div>
+    <div class="beat proof">
+      <div class="verified-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        VERIFIED
+      </div>
+      <div class="beat-label">What it proved</div>
+      <p>Only two accounts had real administrator rights, and both belonged there. The unused sshlab account is disabled now, confirmed by the command output, not by memory. The CodexSandboxOffline and CodexSandboxOnline accounts aren't an unexplained risk. They're created automatically by software already installed on this machine, confirmed both by checking my own PC and by OpenAI's own account-creation pattern.</p>
+      <div class="evidence">
+        <div class="evidence-strip">
+          <div class="evidence-shot" data-full="images/localaccount-04-sshlab-disabled.png"><img src="images/localaccount-04-sshlab-disabled.png" alt="sshlab account confirmed disabled"></div>
+          <div class="evidence-shot" data-full="images/localaccount-05-codexonline.png"><img src="images/localaccount-05-codexonline.png" alt="CodexSandboxOnline account details"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
 
   </section>
 
