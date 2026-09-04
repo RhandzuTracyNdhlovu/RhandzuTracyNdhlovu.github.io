@@ -661,7 +661,8 @@
           }
 
           const data = await res.json();
-          answerBox.textContent = data.answer || data.error || "No answer returned.";
+          const detail = data.detail ? " (" + data.detail + ")" : "";
+          answerBox.textContent = data.answer || (data.error || "No answer returned.") + detail;
         } catch (err) {
           answerBox.textContent =
             "Something went wrong reaching the demo. Try again in a moment.";
