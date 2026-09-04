@@ -547,7 +547,131 @@
       </div>
     </div>
   </section>
+<!--
+  Case Study Q&A widget — paste this block into your portfolio's index.html,
+  wherever you want the demo to sit (e.g. after your case studies, before Contact).
 
+  Before pasting: replace WORKER_URL below with your actual deployed Worker URL
+  (you'll get this from the Cloudflare dashboard after deploying worker.js).
+-->
+
+<section class="case-study-qa" id="case-study-qa">
+  <h2>Ask About My Work</h2>
+  <p class="qa-intro">
+    Pick a question below. The answer is generated live, but it only draws on
+    my actual case study evidence — not a generic guess.
+  </p>
+
+  <div class="qa-buttons">
+    <button data-question="ssh">How did you verify SSH actually worked?</button>
+    <button data-question="cfa">How did you prove Controlled Folder Access was really blocking things?</button>
+    <button data-question="defender">How did you test real-time protection with EICAR?</button>
+    <button data-question="uac">What did you find when you tested UAC on different settings?</button>
+    <button data-question="update">How did you confirm updates were actually current?</button>
+    <button data-question="accounts">How did you handle the two unexplained Codex accounts?</button>
+  </div>
+
+  <div id="qa-answer" class="qa-answer" hidden></div>
+</section>
+
+<style>
+  .case-study-qa {
+    background: #12161C;
+    border: 1px solid #2A3140;
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 2rem 0;
+    font-family: "IBM Plex Sans", sans-serif;
+    color: #E8EAED;
+  }
+
+  .case-study-qa h2 {
+    font-family: "IBM Plex Mono", monospace;
+    color: #4FD1C5;
+    margin-top: 0;
+  }
+
+  .qa-intro {
+    color: #A0A7B0;
+    margin-bottom: 1.5rem;
+  }
+
+  .qa-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .qa-buttons button {
+    background: transparent;
+    border: 1px solid #4FD1C5;
+    color: #4FD1C5;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .qa-buttons button:hover,
+  .qa-buttons button:focus {
+    background: #4FD1C5;
+    color: #12161C;
+  }
+
+  .qa-buttons button:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+
+  .qa-answer {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: #171C24;
+    border-left: 3px solid #4FD1C5;
+    border-radius: 4px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+</style>
+
+<script>
+  (function () {
+    const WORKER_URL = "https://portfolio-qa.ndhlovurhandzutracy.workers.dev";
+
+    const buttons = document.querySelectorAll(".qa-buttons button");
+    const answerBox = document.getElementById("qa-answer");
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        buttons.forEach((b) => (b.disabled = true));
+        answerBox.hidden = false;
+        answerBox.textContent = "Thinking…";
+
+        try {
+          const res = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ questionId: btn.dataset.question }),
+          });
+
+          if (!res.ok) {
+            throw new Error("Request failed: " + res.status);
+          }
+
+          const data = await res.json();
+          answerBox.textContent = data.answer || data.error || "No answer returned.";
+        } catch (err) {
+          answerBox.textContent =
+            "Something went wrong reaching the demo. Try again in a moment.";
+        } finally {
+          buttons.forEach((b) => (b.disabled = false));
+        }
+      });
+    });
+  })();
+</script>
   <section class="contact">
     <div class="section-label">Contact</div>
     <p>I'm looking for a cybersecurity internship where I can keep building skills like these under real mentorship.</p>
